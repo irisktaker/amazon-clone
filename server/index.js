@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 // import from other files
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 
 // initializations
 const app = express();
@@ -16,6 +17,7 @@ const DB = "mongodb+srv://Naser:helloMeJSPythonJ_1.618@cluster0.honjz8j.mongodb.
 // CLIENT(Flutter) -> middleware -> SERVER -> CLIENT(Flutter)
 app.use(express.json());
 app.use(authRouter);
+app.use(userRouter);
 
 // CREATE API -> GET, PUT, POST, DELETE, UPDATE - CRUD
 // GET = CREATE
@@ -43,6 +45,7 @@ app.use(authRouter);
 // });
 
 // Connections
+
 mongoose
   .connect(DB)
   .then(() => {

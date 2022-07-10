@@ -1,6 +1,7 @@
 import 'package:amazon_clone/common/widgets/custom_button.dart';
-import 'package:amazon_clone/common/widgets/custom_textfield.dart';
+import 'package:amazon_clone/common/widgets/custom_text_field.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
+import 'package:amazon_clone/features/auth/services/auth_services.dart';
 import 'package:flutter/material.dart';
 
 enum Auth {
@@ -17,17 +18,20 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  // groupValue
+  Auth _auth = Auth.singUp; // as a default value
+
   // global key
   final _singUpFormKey = GlobalKey<FormState>();
   final _singInFormKey = GlobalKey<FormState>();
+
+  // services
+  final AuthServices authServices = AuthServices();
 
   // controllers
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  // groupValue
-  Auth _auth = Auth.singUp; // as a default value
 
   // clear from memory
   @override
@@ -37,6 +41,23 @@ class _AuthScreenState extends State<AuthScreen> {
     _passwordController.clear();
 
     super.dispose();
+  }
+
+  void singUpUser() {
+    authServices.singUpUser(
+      context: context,
+      name: _nameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+  }
+
+  void singInUser() {
+    authServices.signInUser(
+      context: context,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
   // methods
@@ -62,6 +83,7 @@ class _AuthScreenState extends State<AuthScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: GlobalVariables.greyBackgroundColor,
         body: SafeArea(
           child: Padding(
@@ -100,7 +122,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             obscureText: true,
                           ),
                           const SizedBox(height: 10),
-                          CustomButton(onPressed: () {}, text: "Sing Up")
+                          CustomButton(
+                            text: "Sing Up",
+                            onPressed: () {
+                              if (_singUpFormKey.currentState!.validate()) {
+                                singUpUser();
+                              }
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -128,7 +157,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             obscureText: true,
                           ),
                           const SizedBox(height: 10),
-                          CustomButton(onPressed: () {}, text: "Sing In")
+                          CustomButton(
+                            text: "Sing In",
+                            onPressed: () {
+                              if (_singInFormKey.currentState!.validate()) {
+                                singInUser();
+                              }
+                            },
+                          ),
                         ],
                       ),
                     ),
